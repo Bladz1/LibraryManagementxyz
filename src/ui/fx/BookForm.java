@@ -7,6 +7,8 @@ import model.Book;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import javafx.scene.Node;
+
 
 /**
  * Dialog used for creating or editing a {@link Book} instance.

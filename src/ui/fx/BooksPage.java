@@ -1,6 +1,7 @@
 package ui.fx;
 
 import dao.BookDAO;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -8,11 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import model.Book;
 import ui.fx.components.PagedTableView;
 
@@ -31,7 +28,6 @@ public class BooksPage extends BorderPane {
 
     private final PagedTableView<Book> pagedTable = new PagedTableView<>();
     private final TextField searchField = new TextField();
-
     private final Label emptyState = new Label("Không có sách trong thư viện.");
 
     public BooksPage(BookDAO bookDAO, Runnable onBooksChanged) {
@@ -74,6 +70,7 @@ public class BooksPage extends BorderPane {
 
         Button editButton = new Button("✎ Cập nhật");
         editButton.getStyleClass().addAll("filled-button", "soft");
+
         Button deleteButton = new Button("🗑 Xóa");
         deleteButton.getStyleClass().addAll("filled-button", "danger");
 
@@ -104,7 +101,7 @@ public class BooksPage extends BorderPane {
         table.getColumns().clear();
 
         TableColumn<Book, Number> idCol = new TableColumn<>("Mã sách");
-        idCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getBookID).asObject());
+        idCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getBookID()));
 
         TableColumn<Book, String> titleCol = new TableColumn<>("Tên sách");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -119,16 +116,16 @@ public class BooksPage extends BorderPane {
         publisherCol.setCellValueFactory(new PropertyValueFactory<>("publisher"));
 
         TableColumn<Book, Number> totalCol = new TableColumn<>("Tổng bản");
-        totalCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getTotal).asObject());
+        totalCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getTotal()));
 
         TableColumn<Book, Number> availableCol = new TableColumn<>("Khả dụng");
-        availableCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getAvailable).asObject());
+        availableCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getAvailable()));
 
         TableColumn<Book, String> languageCol = new TableColumn<>("Ngôn ngữ");
         languageCol.setCellValueFactory(new PropertyValueFactory<>("languageCode"));
 
         TableColumn<Book, Number> pagesCol = new TableColumn<>("Số trang");
-        pagesCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getNumPages).asObject());
+        pagesCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getNumPages()));
 
         TableColumn<Book, String> dateCol = new TableColumn<>("Phát hành");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -141,7 +138,7 @@ public class BooksPage extends BorderPane {
         });
 
         TableColumn<Book, Number> ratingCol = new TableColumn<>("Đánh giá");
-        ratingCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createDoubleBinding(c.getValue()::getAverageRating).asObject());
+        ratingCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getAverageRating()));
         ratingCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
@@ -208,14 +205,9 @@ public class BooksPage extends BorderPane {
 
     private void handleEdit() {
         Book selected = pagedTable.getTableView().getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            return;
-        }
-        BookForm dialog = new BookForm(new Book(selected.getBookID(), selected.getIsbn(), selected.getTitle(),
-                selected.getAuthor(), selected.getPublisher(), selected.getTotal(), selected.getAvailable(),
-                selected.getBorrowedCount(), selected.getIsbn13(), selected.getLanguageCode(),
-                selected.getAverageRating(), selected.getRatingsCount(), selected.getTextReviewsCount(),
-                selected.getPublicationDate(), selected.getNumPages()));
+        if (selected == null) return;
+
+        BookForm dialog = new BookForm(selected);
         dialog.initOwner(getScene() != null ? getScene().getWindow() : null);
         dialog.showAndWait().ifPresent(book -> {
             try {
@@ -232,15 +224,14 @@ public class BooksPage extends BorderPane {
 
     private void handleDelete() {
         Book selected = pagedTable.getTableView().getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            return;
-        }
+        if (selected == null) return;
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xóa sách");
         alert.setHeaderText("Bạn chắc chắn muốn xóa sách \"" + selected.getTitle() + "\"?");
         alert.setContentText("Thao tác này không thể hoàn tác.");
         alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(
-                LibraryApp.class.getResource("library-theme.css"))
+                        LibraryApp.class.getResource("library-theme.css"))
                 .toExternalForm());
 
         if (alert.showAndWait().filter(ButtonType.OK::equals).isPresent()) {
@@ -260,7 +251,7 @@ public class BooksPage extends BorderPane {
         alert.setTitle("Hoàn tất");
         alert.setHeaderText(message);
         alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(
-                LibraryApp.class.getResource("library-theme.css"))
+                        LibraryApp.class.getResource("library-theme.css"))
                 .toExternalForm());
         alert.showAndWait();
     }
@@ -269,11 +260,10 @@ public class BooksPage extends BorderPane {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Có lỗi xảy ra");
         alert.setHeaderText(message);
-        if (ex != null && ex.getMessage() != null) {
+        if (ex != null && ex.getMessage() != null)
             alert.setContentText(ex.getMessage());
-        }
         alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(
-                LibraryApp.class.getResource("library-theme.css"))
+                        LibraryApp.class.getResource("library-theme.css"))
                 .toExternalForm());
         alert.showAndWait();
     }

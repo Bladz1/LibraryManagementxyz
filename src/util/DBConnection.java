@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBConnection {
     // Defaults (can be overridden by environment variables below)
-    private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/library_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8";
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/library_management";
     private static final String DEFAULT_USER = "root";
-    private static final String DEFAULT_PASSWORD = "kien1992005t1chy";
+    private static final String DEFAULT_PASSWORD = "Blad@123";
 
     private static volatile Connection connection;
 

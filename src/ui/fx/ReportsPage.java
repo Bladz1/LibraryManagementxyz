@@ -3,22 +3,16 @@ package ui.fx;
 import dao.BookDAO;
 import dao.BorrowRecordDAO;
 import dao.ReaderDAO;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import model.BorrowRecord;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReportsPage extends BorderPane {
@@ -26,10 +20,12 @@ public class ReportsPage extends BorderPane {
     private final BorrowRecordDAO recordDAO;
     private final BookDAO bookDAO;
     private final ReaderDAO readerDAO;
+
     private final ListView<String> topBooksList = new ListView<>();
     private final ListView<String> topReadersList = new ListView<>();
     private final TableView<BorrowRecord> overdueTable = new TableView<>();
     private final TextArea summaryArea = new TextArea();
+
     private final Map<Integer, String> readerCache = new HashMap<>();
     private final Map<Integer, String> bookCache = new HashMap<>();
 
@@ -50,6 +46,7 @@ public class ReportsPage extends BorderPane {
         VBox root = new VBox(16);
         Label title = new Label("Báo cáo & Thống kê");
         title.getStyleClass().add("page-title");
+
         Label subtitle = new Label("Cập nhật nhanh hoạt động của thư viện với top sách, độc giả và cảnh báo quá hạn.");
         subtitle.getStyleClass().add("page-subtitle");
 
@@ -83,6 +80,7 @@ public class ReportsPage extends BorderPane {
     private void configureLists() {
         topBooksList.getStyleClass().add("stat-list");
         topBooksList.setFocusTraversable(false);
+
         topReadersList.getStyleClass().add("stat-list");
         topReadersList.setFocusTraversable(false);
     }
@@ -93,33 +91,34 @@ public class ReportsPage extends BorderPane {
         overdueTable.setPlaceholder(new Label("Không có bản ghi quá hạn."));
 
         TableColumn<BorrowRecord, Number> idCol = new TableColumn<>("Mã");
-        idCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getRecordID).asObject());
+        idCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getRecordID()));
 
         TableColumn<BorrowRecord, String> readerCol = new TableColumn<>("Độc giả");
-        readerCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(readerName(cell.getValue().getReaderID())));
+        readerCol.setCellValueFactory(cell ->
+                new javafx.beans.property.SimpleStringProperty(readerName(cell.getValue().getReaderID())));
 
         TableColumn<BorrowRecord, String> bookCol = new TableColumn<>("Sách");
-        bookCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(bookTitle(cell.getValue().getBookID())));
+        bookCol.setCellValueFactory(cell ->
+                new javafx.beans.property.SimpleStringProperty(bookTitle(cell.getValue().getBookID())));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         TableColumn<BorrowRecord, String> dueCol = new TableColumn<>("Hạn trả");
         dueCol.setCellValueFactory(cell -> {
             LocalDate due = cell.getValue().getDueDate();
-            if (due == null) {
-                return new javafx.beans.property.SimpleStringProperty("-");
-            }
+            if (due == null) return new javafx.beans.property.SimpleStringProperty("-");
             return new javafx.beans.property.SimpleStringProperty(formatter.format(due));
         });
 
         TableColumn<BorrowRecord, Number> daysCol = new TableColumn<>("Quá (ngày)");
-        daysCol.setCellValueFactory(cell -> javafx.beans.binding.Bindings.createIntegerBinding(() -> {
+        daysCol.setCellValueFactory(cell -> {
             LocalDate due = cell.getValue().getDueDate();
-            if (due == null) {
-                return 0;
+            int diff = 0;
+            if (due != null) {
+                long days = java.time.temporal.ChronoUnit.DAYS.between(due, LocalDate.now());
+                diff = (int) Math.max(0, days);
             }
-            long diff = java.time.temporal.ChronoUnit.DAYS.between(due, LocalDate.now());
-            return (int) Math.max(0, diff);
-        }).asObject());
+            return new ReadOnlyObjectWrapper<>(diff);
+        });
 
         overdueTable.getColumns().addAll(idCol, readerCol, bookCol, dueCol, daysCol);
     }
@@ -156,6 +155,7 @@ public class ReportsPage extends BorderPane {
         long returned = allRecords.stream().filter(r -> r.getReturnDate() != null).count();
         long overdue = overdueRecords.size();
         long borrowing = total - returned - overdue;
+
         String summary = "📊 Số liệu thống kê hiện tại:\n" +
                 String.format(" • Tổng số phiếu: %d\n", total) +
                 String.format(" • Đang mượn: %d\n", borrowing) +
