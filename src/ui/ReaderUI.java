@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.util.List;
 
 import static ui.LibraryFrame.simpleChange;
@@ -33,22 +32,20 @@ public class ReaderUI extends JPanel {
     }
 
     private void buildReaderPanel() {
-        JPanel topPanel = new JPanel(new MigLayout("fillx, insets 0", "[grow]rel[]rel[]rel[]"));
+        JPanel topPanel = surface(new MigLayout("fillx, insets 0, gapx 12", "[grow][][][]"));
         searchField = new JTextField();
         searchField.putClientProperty("JTextField.placeholderText",
                 "Tìm kiếm theo tên, email hoặc số điện thoại...");
+        styleSearchField(searchField);
 
         JButton addButton = new JButton("Thêm mới", IconLoader.load("plus", 16));
-        addButton.setBackground(PRIMARY);
-        addButton.setForeground(Color.WHITE);
+        stylePrimaryButton(addButton);
 
         JButton editButton = new JButton("Cập nhật", IconLoader.load("edit-2", 16));
-        editButton.setBackground(new Color(255, 180, 0));
-        editButton.setForeground(Color.WHITE);
+        styleWarningButton(editButton);
 
         JButton deleteButton = new JButton("Xóa", IconLoader.load("trash-2", 16));
-        deleteButton.setBackground(DANGER);
-        deleteButton.setForeground(Color.WHITE);
+        styleDangerButton(deleteButton);
 
         topPanel.add(searchField, "growx");
         topPanel.add(addButton);
@@ -64,17 +61,18 @@ public class ReaderUI extends JPanel {
             }
         };
         table = new JTable(model);
+        applyTableStyling(table);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setRowHeight(28);
-        table.getTableHeader().setFont(H2.deriveFont(java.awt.Font.PLAIN));
 
         int[] widths = {90, 200, 220, 120, 260, 120, 120};
         for (int i = 0; i < widths.length; i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
         }
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JPanel tableContainer = surface(new BorderLayout());
+        tableContainer.add(wrapTable(table), BorderLayout.CENTER);
+        add(tableContainer, BorderLayout.CENTER);
 
         searchField.getDocument().addDocumentListener(simpleChange(this::loadData));
 

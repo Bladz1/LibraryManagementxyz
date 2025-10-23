@@ -11,7 +11,6 @@ import ui.events.EventBus;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 
 import static ui.UiStyles.*;
@@ -47,27 +46,29 @@ public class BorrowRecordUI extends JPanel {
     }
 
     private void buildBorrowPanel() {
-        JPanel topPanel = new JPanel(new MigLayout("fillx, insets 0", "[grow]"));
+        JPanel topPanel = surface(new MigLayout("fillx, insets 0, gapx 12", "[grow][]"));
         JButton create = new JButton("Tạo phiếu mượn", IconLoader.load("plus", 16));
-        create.setBackground(PRIMARY);
-        create.setForeground(Color.WHITE);
+        stylePrimaryButton(create);
         topPanel.add(create, "align right");
         add(topPanel, BorderLayout.NORTH);
 
         borrowTable = new JTable(tableModel);
+        applyTableStyling(borrowTable);
         borrowTable.setFillsViewportHeight(true);
         borrowTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        borrowTable.setRowHeight(28);
 
         int[] widths = {80, 120, 120, 110, 110, 110, 110};
         for (int i = 0; i < widths.length && i < borrowTable.getColumnCount(); i++) {
             borrowTable.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
         }
 
-        add(new JScrollPane(borrowTable), BorderLayout.CENTER);
+        JPanel tableContainer = surface(new BorderLayout());
+        tableContainer.add(wrapTable(borrowTable), BorderLayout.CENTER);
+        add(tableContainer, BorderLayout.CENTER);
 
         JButton markReturned = new JButton("Trả sách");
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        styleSuccessButton(markReturned);
+        JPanel actions = surface(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         actions.add(markReturned);
         add(actions, BorderLayout.SOUTH);
 
