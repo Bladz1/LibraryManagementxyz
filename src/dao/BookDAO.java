@@ -22,9 +22,21 @@ public class BookDAO extends BaseDAO<Book> {
         book.setLanguageCode(rs.getString("language_code"));
         book.setNumPages(rs.getInt("num_pages"));
         book.setPublisher(rs.getString("publisher"));
-        //book.setTotal(rs.getInt("total"));
-        //book.setAvailable(rs.getInt("available"));
-        //book.setBorrowedCount(book.getTotal() - book.getAvailable());
+        try {
+            int total = rs.getInt("total");
+            if (!rs.wasNull()) {
+                book.setTotal(total);
+            }
+        } catch (SQLException ignored) {
+        }
+        try {
+            int available = rs.getInt("available");
+            if (!rs.wasNull()) {
+                book.setAvailable(available);
+            }
+        } catch (SQLException ignored) {
+        }
+        book.setBorrowedCount(Math.max(0, book.getTotal() - book.getAvailable()));
         String dateStr = rs.getString("publication_date");
         if (dateStr != null && !dateStr.trim().isEmpty()) {
             book.setPublicationDate(LocalDate.parse(dateStr));
@@ -74,7 +86,7 @@ public class BookDAO extends BaseDAO<Book> {
     // Trong BookDAO.java
 
     public List<Book> getAllBooks() {
-        final String SQL = "SELECT book_id,  title, authors, average_rating,isbn, language_code, num_pages,  publication_date, publisher FROM books ORDER BY title ASC";
+        final String SQL = "SELECT book_id, title, authors, average_rating, isbn, language_code, num_pages, publication_date, publisher, total, available FROM books ORDER BY title ASC";
 
         List<Book> books = new ArrayList<>();
 
@@ -126,7 +138,11 @@ public class BookDAO extends BaseDAO<Book> {
             ps.setString(3, book.getIsbn());
             ps.setString(4, book.getPublisher());
             ps.setInt(5, book.getNumPages());
-            ps.setDate(6, Date.valueOf(book.getPublicationDate()));
+            if (book.getPublicationDate() != null) {
+                ps.setDate(6, Date.valueOf(book.getPublicationDate()));
+            } else {
+                ps.setNull(6, Types.DATE);
+            }
             ps.setInt(7, book.getTotal());
             ps.setInt(8, book.getAvailable());
             ps.setInt(9, book.getBookID());
