@@ -4,6 +4,7 @@ import dao.BookDAO;
 import dao.BorrowRecordDAO;
 import dao.ReaderDAO;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BorrowPage extends BorderPane {
 
@@ -141,7 +143,7 @@ public class BorrowPage extends BorderPane {
         table.getColumns().clear();
 
         TableColumn<BorrowRecord, Number> idCol = new TableColumn<>("Mã phiếu");
-        idCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getRecordID).asObject());
+        idCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getRecordID()));
 
         TableColumn<BorrowRecord, String> readerCol = new TableColumn<>("Độc giả");
         readerCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(readerName(cell.getValue().getReaderID())));

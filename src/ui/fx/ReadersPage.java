@@ -1,6 +1,7 @@
 package ui.fx;
 
 import dao.ReaderDAO;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -101,7 +102,7 @@ public class ReadersPage extends BorderPane {
         table.getColumns().clear();
 
         TableColumn<Reader, Number> idCol = new TableColumn<>("Mã độc giả");
-        idCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createIntegerBinding(c.getValue()::getReaderID).asObject());
+        idCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getReaderID()));
 
         TableColumn<Reader, String> nameCol = new TableColumn<>("Họ tên");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -125,7 +126,7 @@ public class ReadersPage extends BorderPane {
         });
 
         TableColumn<Reader, Boolean> activeCol = new TableColumn<>("Trạng thái");
-        activeCol.setCellValueFactory(c -> javafx.beans.binding.Bindings.createBooleanBinding(c.getValue()::isActive).asObject());
+        activeCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().isActive()));
         activeCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
