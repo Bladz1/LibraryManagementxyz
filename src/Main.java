@@ -1,10 +1,8 @@
-import ui.LibraryFrame;
+import ui.fx.LibraryApp;
 
 
 public class Main {
     public static void main(String[] args) {
-
-        LibraryFrame.launch();
-
+        LibraryApp.launchApp(args);
     }
 }
