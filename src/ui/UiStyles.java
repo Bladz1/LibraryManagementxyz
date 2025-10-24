@@ -15,8 +15,11 @@ public final class UiStyles {
     // Colors (approx to your mockup)
     public static final Color BG = new Color(248, 250, 255);
     public static final Color SIDEBAR_BG = new Color(245, 247, 255);
+    public static final Color SIDEBAR_BORDER = new Color(229, 231, 235);
+    public static final Color SIDEBAR_ACTIVE = new Color(99, 102, 241, 40);
     public static final Color CARD_BG = Color.WHITE;
     public static final Color PRIMARY = new Color(99, 102, 241); // indigo-500
+    public static final Color PRIMARY_DARK = new Color(79, 70, 229);
     public static final Color INFO = new Color(59, 130, 246);
     public static final Color SUCCESS = new Color(34, 197, 94);
     public static final Color DANGER = new Color(239, 68, 68);
@@ -100,8 +103,20 @@ public final class UiStyles {
         button.setBorder(new EmptyBorder(10, 16, 10, 16));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(true);
+        button.putClientProperty("JButton.buttonType", "roundRect");
+        button.putClientProperty("JButton.arc", 18);
         button.putClientProperty("JComponent.roundRect", true);
         button.setIconTextGap(8);
+    }
+
+    public static void styleGhostButton(JButton button) {
+        baseButton(button);
+        button.setBackground(new Color(255, 255, 255, 45));
+        button.setForeground(Color.WHITE);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(255, 255, 255, 120), 1, true),
+                new EmptyBorder(10, 16, 10, 16)
+        ));
     }
 
     public static void applyTableStyling(JTable table) {
