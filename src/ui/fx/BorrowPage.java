@@ -11,6 +11,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -180,6 +181,8 @@ public class BorrowPage extends BorderPane {
                     }
                     setGraphic(label);
                     setText(null);
+                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
@@ -206,6 +209,8 @@ public class BorrowPage extends BorderPane {
                     }
                     setGraphic(chip);
                     setText(null);
+                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    setAlignment(Pos.CENTER);
                 }
             }
         });
