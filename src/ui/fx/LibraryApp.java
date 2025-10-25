@@ -7,9 +7,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.BorrowRecord;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javafx.scene.text.TextAlignment;
 
 public class LibraryApp extends Application {
 
@@ -213,27 +217,76 @@ public class LibraryApp extends Application {
         TableColumn<BorrowRecord, String> statusCol = new TableColumn<>("Trạng thái");
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(resolveStatus(cell.getValue())));
 
+        statusCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label chip = new Label(item);
+                    chip.getStyleClass().add("status-chip");
+                    switch (item) {
+                        case "Đã trả" -> chip.getStyleClass().add("chip-success");
+                        case "Quá hạn" -> chip.getStyleClass().add("chip-danger");
+                        default -> chip.getStyleClass().add("chip-info");
+                    }
+                    setGraphic(chip);
+                    setText(null);
+                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
+
         recentTable.getColumns().addAll(readerCol, bookCol, borrowCol, statusCol);
     }
 
     private void configureStatList(ListView<String> listView) {
         listView.getStyleClass().add("stat-list");
         listView.setFocusTraversable(false);
+        listView.setCellFactory(view -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    setTextAlignment(TextAlignment.CENTER);
+                    setWrapText(true);
+                }
+            }
+        });
     }
 
     private VBox metricCard(String title, Label valueLabel, String accentClass) {
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("metric-title");
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
+        titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setTextAlignment(TextAlignment.CENTER);
         valueLabel.getStyleClass().add("metric-value");
+        valueLabel.setMaxWidth(Double.MAX_VALUE);
+        valueLabel.setAlignment(Pos.CENTER);
+        valueLabel.setTextAlignment(TextAlignment.CENTER);
         VBox card = new VBox(8, titleLabel, valueLabel);
         card.getStyleClass().addAll("card", "metric-card", accentClass);
+        card.setAlignment(Pos.CENTER);
         return card;
     }
 
     private VBox statCard(String title, Control content) {
         Label heading = new Label(title);
+        heading.getStyleClass().add("card-heading");
+        heading.setMaxWidth(Double.MAX_VALUE);
+        heading.setAlignment(Pos.CENTER);
+        heading.setTextAlignment(TextAlignment.CENTER);
         VBox card = new VBox(12, heading, content);
         card.getStyleClass().add("card");
+        card.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(content, Priority.ALWAYS);
         return card;
     }

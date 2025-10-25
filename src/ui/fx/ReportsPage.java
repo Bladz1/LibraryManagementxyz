@@ -6,6 +6,7 @@ import dao.ReaderDAO;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.BorrowRecord;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import javafx.scene.text.TextAlignment;
 
 public class ReportsPage extends BorderPane {
 
@@ -80,9 +82,37 @@ public class ReportsPage extends BorderPane {
     private void configureLists() {
         topBooksList.getStyleClass().add("stat-list");
         topBooksList.setFocusTraversable(false);
+        topBooksList.setCellFactory(view -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    setTextAlignment(TextAlignment.CENTER);
+                    setWrapText(true);
+                }
+            }
+        });
 
         topReadersList.getStyleClass().add("stat-list");
         topReadersList.setFocusTraversable(false);
+        topReadersList.setCellFactory(view -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    setTextAlignment(TextAlignment.CENTER);
+                    setWrapText(true);
+                }
+            }
+        });
     }
 
     private void configureTable() {
@@ -92,6 +122,7 @@ public class ReportsPage extends BorderPane {
 
         TableColumn<BorrowRecord, Number> idCol = new TableColumn<>("Mã");
         idCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getRecordID()));
+        idCol.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<BorrowRecord, String> readerCol = new TableColumn<>("Độc giả");
         readerCol.setCellValueFactory(cell ->
@@ -108,6 +139,7 @@ public class ReportsPage extends BorderPane {
             if (due == null) return new javafx.beans.property.SimpleStringProperty("-");
             return new javafx.beans.property.SimpleStringProperty(formatter.format(due));
         });
+        dueCol.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<BorrowRecord, Number> daysCol = new TableColumn<>("Quá (ngày)");
         daysCol.setCellValueFactory(cell -> {
@@ -119,6 +151,7 @@ public class ReportsPage extends BorderPane {
             }
             return new ReadOnlyObjectWrapper<>(diff);
         });
+        daysCol.setStyle("-fx-alignment: CENTER;");
 
         overdueTable.getColumns().addAll(idCol, readerCol, bookCol, dueCol, daysCol);
     }
@@ -134,8 +167,13 @@ public class ReportsPage extends BorderPane {
 
     private VBox createCard(String title, Control content) {
         Label heading = new Label(title);
+        heading.getStyleClass().add("card-heading");
+        heading.setMaxWidth(Double.MAX_VALUE);
+        heading.setAlignment(Pos.CENTER);
+        heading.setTextAlignment(TextAlignment.CENTER);
         VBox box = new VBox(12, heading, content);
         box.getStyleClass().add("card");
+        box.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(content, Priority.ALWAYS);
         return box;
     }

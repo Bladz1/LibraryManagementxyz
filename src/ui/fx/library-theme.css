@@ -7,6 +7,41 @@
     -fx-background-color: #f9fafc;
 }
 
+/* --- SIDEBAR & NAVIGATION --- */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #251a4f, #3b2677);
+    -fx-background-radius: 0 24 24 0;
+    -fx-effect: dropshadow(gaussian, rgba(19, 14, 40, 0.35), 20, 0.25, 0, 0);
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.78);
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 18;
+    -fx-background-radius: 16;
+    -fx-alignment: center-left;
+    -fx-graphic-text-gap: 12;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.16);
+    -fx-text-fill: white;
+}
+
+.nav-button:selected {
+    -fx-background-color: linear-gradient(to right, #7c3aed, #8b5cf6);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.45), 12, 0.35, 0, 3);
+}
+
+.brand {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
 /* --- PAGE TITLES --- */
 .page-title {
     -fx-font-size: 22px;
@@ -25,6 +60,68 @@
     -fx-background-radius: 8;
     -fx-padding: 16;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.3, 0, 2);
+}
+
+.card-heading {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #2f365f;
+}
+
+.metric-card {
+    -fx-padding: 20 24;
+    -fx-background-radius: 18;
+    -fx-spacing: 8;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.15), 16, 0.4, 0, 6);
+}
+
+.metric-card .label {
+    -fx-text-alignment: center;
+}
+
+.metric-card.accent-primary {
+    -fx-background-color: linear-gradient(to bottom right, #7c3aed, #6366f1);
+}
+
+.metric-card.accent-success {
+    -fx-background-color: linear-gradient(to bottom right, #10b981, #22d3ee);
+}
+
+.metric-card.accent-info {
+    -fx-background-color: linear-gradient(to bottom right, #3b82f6, #06b6d4);
+}
+
+.metric-title {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-size: 14px;
+    -fx-letter-spacing: 0.4px;
+}
+
+.metric-value {
+    -fx-text-fill: white;
+    -fx-font-size: 30px;
+    -fx-font-weight: 700;
+}
+
+.stat-list {
+    -fx-background-color: rgba(99, 102, 241, 0.05);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(99, 102, 241, 0.18);
+    -fx-border-radius: 12;
+    -fx-padding: 8;
+}
+
+.stat-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8 12;
+    -fx-text-fill: #2f365f;
+    -fx-font-weight: 500;
+}
+
+.stat-list .list-cell:filled:selected, .stat-list .list-cell:filled:hover {
+    -fx-background-color: rgba(124, 58, 237, 0.12);
+    -fx-text-fill: #1f2a6b;
 }
 
 /* --- BUTTONS --- */
