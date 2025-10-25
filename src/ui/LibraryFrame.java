@@ -56,8 +56,8 @@ public class LibraryFrame extends JFrame {
     }
 
     private void buildSidebar() {
-        JPanel side = new JPanel(new BorderLayout());
-        side.setBackground(SIDEBAR_BG);
+        JPanel side = new VerticalGradientPanel(SIDEBAR_BG, PRIMARY_DARK);
+        side.setLayout(new BorderLayout());
         side.setPreferredSize(new Dimension(260, 0));
         side.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, SIDEBAR_BORDER));
 
@@ -66,12 +66,12 @@ public class LibraryFrame extends JFrame {
 
         JLabel title = new JLabel("📚 Thư Viện Số");
         title.setFont(TITLE.deriveFont(24f));
-        title.setForeground(TEXT);
+        title.setForeground(Color.WHITE);
         contentPanel.add(title, "gapbottom 2, growx");
 
         JLabel subtitle = new JLabel("Quản lý thông minh & đẳng cấp");
         subtitle.setFont(BODY);
-        subtitle.setForeground(TEXT_MUTED);
+        subtitle.setForeground(TEXT_ON_DARK_MUTED);
         contentPanel.add(subtitle, "gapbottom 16, growx");
 
         contentPanel.add(sidebarBanner(), "growx, gapbottom 16");
@@ -89,7 +89,7 @@ public class LibraryFrame extends JFrame {
         footer.setBorder(new EmptyBorder(12, 20, 24, 20));
         JLabel version = new JLabel("<html><b>Library Pro Edition</b><br/>Phiên bản 2024</html>");
         version.setFont(BODY.deriveFont(12f));
-        version.setForeground(TEXT_MUTED);
+        version.setForeground(TEXT_ON_DARK_MUTED);
         footer.add(version, BorderLayout.CENTER);
         side.add(footer, BorderLayout.SOUTH);
 
@@ -108,7 +108,7 @@ public class LibraryFrame extends JFrame {
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         b.putClientProperty("JButton.buttonType", "roundRect");
         b.putClientProperty("JButton.arc", 24);
-        b.setForeground(TEXT_MUTED);
+        b.setForeground(TEXT_ON_DARK_MUTED);
         installNavHover(b, key);
         b.addActionListener(e -> showPage(key));
         navButtons.put(key, b);
@@ -160,14 +160,14 @@ public class LibraryFrame extends JFrame {
     }
 
     private JPanel metric(String title, JLabel value, Color accent, Icon icon) {
-        GradientPanel card = new GradientPanel(lighten(accent, 0.2), accent);
+        GradientPanel card = new GradientPanel(lighten(accent, 0.35), accent);
         card.setLayout(new BorderLayout(0, 16));
         card.setBorder(new EmptyBorder(20, 20, 20, 20));
         card.putClientProperty("JComponent.roundRect", true);
 
         JLabel iconHolder = new JLabel(icon);
         iconHolder.setOpaque(true);
-        iconHolder.setBackground(new Color(255, 255, 255, 45));
+        iconHolder.setBackground(new Color(255, 255, 255, 70));
         iconHolder.setForeground(Color.WHITE);
         iconHolder.setHorizontalAlignment(SwingConstants.CENTER);
         iconHolder.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -190,7 +190,7 @@ public class LibraryFrame extends JFrame {
 
         JLabel hint = new JLabel("Cập nhật tức thời");
         hint.setFont(BODY.deriveFont(Font.PLAIN, 12f));
-        hint.setForeground(new Color(255, 255, 255, 180));
+        hint.setForeground(new Color(255, 255, 255, 205));
         card.add(hint, BorderLayout.SOUTH);
 
         return card;
@@ -298,7 +298,7 @@ public class LibraryFrame extends JFrame {
             } else {
                 button.setOpaque(false);
                 button.setContentAreaFilled(false);
-                button.setForeground(TEXT_MUTED);
+                button.setForeground(TEXT_ON_DARK_MUTED);
                 button.setBorder(new EmptyBorder(12, 18, 12, 18));
             }
         });
@@ -312,6 +312,7 @@ public class LibraryFrame extends JFrame {
                     button.setOpaque(true);
                     button.setContentAreaFilled(true);
                     button.setBackground(SIDEBAR_ACTIVE);
+                    button.setForeground(Color.WHITE);
                 }
             }
 
@@ -320,13 +321,14 @@ public class LibraryFrame extends JFrame {
                 if (!key.equals(currentPage)) {
                     button.setOpaque(false);
                     button.setContentAreaFilled(false);
+                    button.setForeground(TEXT_ON_DARK_MUTED);
                 }
             }
         });
     }
 
     private JComponent sidebarBanner() {
-        GradientPanel banner = new GradientPanel(PRIMARY_DARK, PRIMARY);
+        GradientPanel banner = new GradientPanel(ACCENT_PINK, ACCENT_CYAN);
         banner.setLayout(new BorderLayout(0, 10));
         banner.setBorder(new EmptyBorder(20, 20, 20, 20));
         banner.putClientProperty("JComponent.roundRect", true);
@@ -337,7 +339,7 @@ public class LibraryFrame extends JFrame {
 
         JLabel desc = new JLabel("Theo dõi thư viện của bạn một cách đẳng cấp.");
         desc.setFont(BODY);
-        desc.setForeground(new Color(240, 249, 255));
+        desc.setForeground(new Color(226, 244, 255));
 
         JPanel textPanel = new JPanel();
         textPanel.setOpaque(false);
@@ -360,7 +362,7 @@ public class LibraryFrame extends JFrame {
     }
 
     private JComponent buildHeroSection() {
-        GradientPanel hero = new GradientPanel(PRIMARY, PRIMARY_DARK);
+        GradientPanel hero = new GradientPanel(ACCENT_PINK, PRIMARY);
         hero.setLayout(new BorderLayout(0, 16));
         hero.setBorder(new EmptyBorder(28, 32, 28, 32));
         hero.putClientProperty("JComponent.roundRect", true);
@@ -375,7 +377,7 @@ public class LibraryFrame extends JFrame {
 
         JLabel subtitle = new JLabel("Cập nhật nhanh tình hình hoạt động hôm nay.");
         subtitle.setFont(BODY.deriveFont(Font.PLAIN, 14f));
-        subtitle.setForeground(new Color(226, 232, 255));
+        subtitle.setForeground(new Color(237, 242, 255));
 
         texts.add(heading);
         texts.add(Box.createVerticalStrut(6));
@@ -434,9 +436,31 @@ public class LibraryFrame extends JFrame {
     private JLabel tipLabel(String text, String icon) {
         JLabel label = new JLabel(text, IconLoader.load(icon, 18), SwingConstants.LEFT);
         label.setFont(BODY);
-        label.setForeground(TEXT_MUTED);
+        label.setForeground(new Color(84, 94, 134));
         label.setBorder(new EmptyBorder(6, 0, 6, 0));
         return label;
+    }
+
+    private static class VerticalGradientPanel extends JPanel {
+        private final Color start;
+        private final Color end;
+
+        VerticalGradientPanel(Color start, Color end) {
+            this.start = start;
+            this.end = end;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            GradientPaint paint = new GradientPaint(0, 0, start, 0, getHeight(), end);
+            g2.setPaint(paint);
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.dispose();
+            super.paintComponent(g);
+        }
     }
 
     private Color lighten(Color color, double factor) {
