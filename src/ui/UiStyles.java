@@ -13,22 +13,27 @@ public final class UiStyles {
 
 
     // Colors (approx to your mockup)
-    public static final Color BG = new Color(248, 250, 255);
-    public static final Color SIDEBAR_BG = new Color(245, 247, 255);
-    public static final Color SIDEBAR_BORDER = new Color(229, 231, 235);
-    public static final Color SIDEBAR_ACTIVE = new Color(99, 102, 241, 40);
-    public static final Color CARD_BG = Color.WHITE;
-    public static final Color PRIMARY = new Color(99, 102, 241); // indigo-500
-    public static final Color PRIMARY_DARK = new Color(79, 70, 229);
+    public static final Color BG = new Color(244, 246, 255);
+    public static final Color SIDEBAR_BG = new Color(33, 27, 71);
+    public static final Color SIDEBAR_BORDER = new Color(86, 80, 140);
+    public static final Color SIDEBAR_ACTIVE = new Color(99, 179, 237, 120);
+    public static final Color CARD_BG = new Color(252, 253, 255);
+    public static final Color PRIMARY = new Color(139, 92, 246);
+    public static final Color PRIMARY_DARK = new Color(76, 29, 149);
+    public static final Color PRIMARY_LIGHT = new Color(196, 181, 253);
+    public static final Color ACCENT_PINK = new Color(236, 72, 153);
+    public static final Color ACCENT_CYAN = new Color(56, 189, 248);
     public static final Color INFO = new Color(59, 130, 246);
-    public static final Color SUCCESS = new Color(34, 197, 94);
+    public static final Color SUCCESS = new Color(16, 185, 129);
     public static final Color DANGER = new Color(239, 68, 68);
     public static final Color WARNING = new Color(249, 115, 22);
-    public static final Color TEXT = new Color(30, 41, 59);
-    public static final Color TEXT_MUTED = new Color(100, 116, 139);
-    public static final Color BORDER = new Color(226, 232, 240);
-    public static final Color TABLE_ALT_ROW = new Color(248, 250, 252);
-    public static final Color TABLE_SELECTION_BG = new Color(99, 102, 241, 40);
+    public static final Color TEXT = new Color(30, 33, 53);
+    public static final Color TEXT_MUTED = new Color(99, 108, 136);
+    public static final Color TEXT_ON_DARK = new Color(228, 233, 255);
+    public static final Color TEXT_ON_DARK_MUTED = new Color(182, 195, 255);
+    public static final Color BORDER = new Color(216, 223, 255);
+    public static final Color TABLE_ALT_ROW = new Color(242, 247, 255);
+    public static final Color TABLE_SELECTION_BG = new Color(139, 92, 246, 60);
 
 
     public static final Font TITLE = new Font("Segoe UI", Font.BOLD, 22);
@@ -58,7 +63,10 @@ public final class UiStyles {
     public static void styleSurface(JComponent component) {
         component.setOpaque(true);
         component.setBackground(CARD_BG);
-        component.setBorder(new EmptyBorder(16, 16, 16, 16));
+        component.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 1, 1, 1, BORDER),
+                new EmptyBorder(20, 24, 20, 24)
+        ));
         component.putClientProperty("JComponent.roundRect", true);
     }
 
@@ -67,8 +75,8 @@ public final class UiStyles {
         field.setForeground(TEXT);
         field.setBackground(Color.WHITE);
         field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(1, 1, 1, 1, BORDER),
-                new EmptyBorder(8, 12, 8, 12)
+                BorderFactory.createMatteBorder(1, 1, 1, 1, PRIMARY_LIGHT),
+                new EmptyBorder(8, 14, 8, 14)
         ));
         field.putClientProperty("JComponent.roundRect", true);
     }
@@ -100,7 +108,7 @@ public final class UiStyles {
     private static void baseButton(JButton button) {
         button.setFont(H2.deriveFont(Font.PLAIN, 14f));
         button.setFocusPainted(false);
-        button.setBorder(new EmptyBorder(10, 16, 10, 16));
+        button.setBorder(new EmptyBorder(12, 18, 12, 18));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(true);
         button.putClientProperty("JButton.buttonType", "roundRect");
@@ -111,11 +119,11 @@ public final class UiStyles {
 
     public static void styleGhostButton(JButton button) {
         baseButton(button);
-        button.setBackground(new Color(255, 255, 255, 45));
+        button.setBackground(new Color(255, 255, 255, 55));
         button.setForeground(Color.WHITE);
         button.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(255, 255, 255, 120), 1, true),
-                new EmptyBorder(10, 16, 10, 16)
+                BorderFactory.createLineBorder(new Color(255, 255, 255, 150), 1, true),
+                new EmptyBorder(12, 18, 12, 18)
         ));
     }
 
@@ -135,8 +143,8 @@ public final class UiStyles {
         JTableHeader header = table.getTableHeader();
         if (header != null) {
             header.setFont(H2.deriveFont(Font.PLAIN, 13f));
-            header.setBackground(new Color(241, 245, 249));
-            header.setForeground(TEXT);
+            header.setBackground(PRIMARY_LIGHT);
+            header.setForeground(new Color(54, 33, 97));
             header.setReorderingAllowed(false);
             TableCellRenderer headerRenderer = header.getDefaultRenderer();
             if (headerRenderer instanceof DefaultTableCellRenderer renderer) {
